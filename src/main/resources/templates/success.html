@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<title>Subscribe Success</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../public/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<h1>Du er nu tilmeld nyhedsbrevet!</h1>
+
+<p th:text="${message}"></p>
+
+<form method="post">
+
+  <a href="/index">
+    <button type="button">Tilbage til forsiden</button>
+  </a>
+
+</form>
+
+</body>
+</html>
