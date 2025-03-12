@@ -38,7 +38,7 @@ public class Main {
         app.get("/", ctx ->  ctx.render("index.html"));
         app.get("/login", ctx -> viewLoginPage(ctx));
         app.post("/", ctx -> login(ctx));
-        app.post("/subscribe", ctx -> viewSubscribePage(ctx));
+        app.get("/subscribe", ctx -> viewSubscribePage(ctx));
         app.post("/", ctx -> subscribe(ctx));
     }
 
@@ -68,15 +68,30 @@ public class Main {
     private static void subscribe(Context ctx) throws DatabaseException {
         String email = ctx.formParam("email");
 
-        if (email == null) {
-            ctx.redirect("index.html");
-        } else {
-            SubscriberMapper mapper = new SubscriberMapper();
-            mapper.insertSubscriber(connectionPool, email);
+
+        // Validate email
+        if (email == null || email.isEmpty()) {
+            ctx.attribute("error", "Invalid email address");
+            ctx.redirect("/subscribe"); // Redirect back to the subscribe page
+            return;
         }
 
-        ctx.attribute("subscribe", true);
-        ctx.render("success.html");
+        try {
+            // Insert email into the database
+            SubscriberMapper mapper = new SubscriberMapper();
+            mapper.insertSubscriber(connectionPool, email);
+
+            // Set success attribute and render success page
+            ctx.attribute("message", "You have successfully subscribed!");
+            ctx.render("success.html");
+        } catch (DatabaseException e) {
+            // Handle database errors
+            ctx.attribute("error", "An error occurred while subscribing. Please try again.");
+            ctx.redirect("/subscribe"); // Redirect back to the subscribe page
+        }
+
     }
 
+
 }
+
