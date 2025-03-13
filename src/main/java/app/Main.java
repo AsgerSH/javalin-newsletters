@@ -39,7 +39,7 @@ public class Main {
         app.get("/login", ctx -> viewLoginPage(ctx));
         app.post("/", ctx -> login(ctx));
         app.get("/subscribe", ctx -> viewSubscribePage(ctx));
-        app.post("/", ctx -> subscribe(ctx));
+        app.post("/subscribe", ctx -> subscribe(ctx));
     }
 
     private static void viewLoginPage(Context ctx){
@@ -70,7 +70,7 @@ public class Main {
 
 
         // Validate email
-        if (email == null || email.isEmpty()) {
+        if (email == null || email.isEmpty() || !email.contains(email)) {
             ctx.attribute("error", "Invalid email address");
             ctx.redirect("/subscribe"); // Redirect back to the subscribe page
             return;
@@ -81,11 +81,10 @@ public class Main {
             SubscriberMapper mapper = new SubscriberMapper();
             mapper.insertSubscriber(connectionPool, email);
 
-            // Set success attribute and render success page
+
             ctx.attribute("message", "You have successfully subscribed!");
             ctx.render("success.html");
         } catch (DatabaseException e) {
-            // Handle database errors
             ctx.attribute("error", "An error occurred while subscribing. Please try again.");
             ctx.redirect("/subscribe"); // Redirect back to the subscribe page
         }
