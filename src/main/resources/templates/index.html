@@ -7,8 +7,16 @@
 </head>
 
 <body>
-<h1>Welcome to the Javalin / Thymeleaf demo</h1>
-<p>This is your first web application in this world</p>
+<div id="page-wrapper">
+<header>
+    <a th:href="@{/}">
+        <img id="top-banner" src="../images/cphbusiness_viderega-ende-logo-rgb.png"/>
+    </a>
+</header>
+<main>
+    <h1 th:text="${title}"></h1>
+
+    <p th:text="${message}"></p>
 <a th:href="@{/login}">Login</a>
 </br>
 <a th:href="@{/subscribe}">Tilmeld nyhedsbrev</a>
@@ -40,7 +48,8 @@
 
 <!--    </div>-->
 <!--</div>-->
-
+</main>
+</div>
 
 </body>
 </html>

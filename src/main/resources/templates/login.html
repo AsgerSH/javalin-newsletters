@@ -7,23 +7,48 @@
 </head>
 
 <body>
-<h1>Login</h1>
+<div id="page-wrapper">
+    <header>
+        <a th:href="@{/}">
+            <img id="top-banner" src="../images/cphbusiness_viderega-ende-logo-rgb.png"/>
+        </a>
+    </header>
+<main>
+
+    <h1 th:text="${title}"></h1>
 
 <p th:text="${message}"></p>
 
+<!--<form method="post">-->
+
+<!--    <label for="username">Brugernavn</label>-->
+<!--    <input type="text" id="username" name="username" placeholder="brugernavn"/>-->
+<!--    <label for="password">Kodeord</label>-->
+<!--    <input type="password" id="password" name="password" placeholder="kodeord"/>-->
+<!--    <button type="submit" formaction="/">Log ind</button>-->
+<!--</form>-->
 <form method="post">
 
-    <label for="username">Brugernavn</label>
-    <input type="text" id="username" name="username" placeholder="brugernavn"/>
-    <label for="password">Kodeord</label>
-    <input type="password" id="password" name="password" placeholder="kodeord"/>
-    <button type="submit" formaction="/">Log ind</button>
-</form>
-</br>
-<form method="get" action="/">
-    <button type="submit" class="button">Tilbage til forsiden</button>
+    <div class="container">
+        <label for="username"><b>Brugernavn</b></label>
+        <input type="text" id="username" name="username" required placeholder="cph-12345@cphbusiness.dk">
 
+        <label for="password"><b>Kodeord</b></label>
+        <input type="password" id="password" name="password" required placeholder="********">
+
+        <button type="submit">Log ind</button>
+        <label>
+            <input type="checkbox" checked="checked" name="remember"> Husk mig
+            <span class="psw">Glemt <a href="#">kodeord?</a></span>
+        </label>
+    </div>
 </form>
+
+    <form method="get" action="/">
+        <button type="submit" class="button">Tilbage til forsiden</button>
+    </form>
+</main>
+</div>
 
 </body>
 </html>

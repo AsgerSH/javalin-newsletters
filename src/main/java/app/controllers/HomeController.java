@@ -20,6 +20,8 @@ public class HomeController {
     public static void home(Context ctx) throws DatabaseException {
         List<Newsletter> newsletters = NewsletterMapper.getAllNewsletters(connectionPool);
         ctx.attribute("newsletters", newsletters);
+        ctx.attribute("message", "Vælg en af nedenstående muligheder!");
+        ctx.attribute("title", "Velkommen til hovedsiden");
         ctx.render("index.html");
     }
 
@@ -73,8 +75,9 @@ public class HomeController {
     }
 
     public static void viewLoginPage(Context ctx) {
-        String message = "Hej med dig - velkommen til loginsiden";
+        String message = "Indtast venligst dine oplysninger!";
         ctx.attribute("message", message);
+        ctx.attribute("title", "Velkommen til login-siden");
         ctx.render("login.html");
     }
 

@@ -7,11 +7,8 @@
 </head>
 
 <body>
-
-<header>
-    <img src="../../public/images/cphbusiness.webp" th:src="@{/images/cphbusiness.webp}" alt="logo"/>
-</header>
-
+<div id="page-wrapper">
+    <main>
 <h1>Hej admin!</h1>
 
 <p th:text="${message}"></p>
@@ -37,5 +34,8 @@
 
     <button class="button" type="submit" formaction="/admin/newsletters/add">Tilføj nyhedsbrev til samlingen</button>
 </form>
+
+    </main>
+</div>
 </body>
 </html>
