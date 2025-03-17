@@ -7,10 +7,9 @@
   <link href="/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
-<h1>Tak for din tilmelding!</h1>
-<p>Du er nu tilmeldt vores nyhedsbrev.</p>
+<h1 th:text="${title}"></h1>
+<p th:text="${message}"></p>
 
-<a href="/" class="button">Tilbage til forsiden</a>
 
 
 <form method="get" action="/">

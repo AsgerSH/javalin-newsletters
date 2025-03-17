@@ -2,15 +2,18 @@ package app;
 
 import app.config.SessionConfig;
 import app.config.ThymeleafConfig;
+import app.controllers.AdminController;
+import app.controllers.HomeController;
+import app.entities.Newsletter;
 import app.persistence.ConnectionPool;
-import app.persistence.DatabaseException;
+import app.exceptions.DatabaseException;
+import app.persistence.NewsletterMapper;
 import app.persistence.SubscriberMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Main {
@@ -22,75 +25,33 @@ public class Main {
     private static final String DB = "cphbusinessnewsletter";
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
-
-    public static void main(String[] args)
-    {
+    private static final HomeController homeController= new HomeController(connectionPool);
+    private static final AdminController adminController= new AdminController(connectionPool);
+    public static void main(String[] args) {
         // Initializing Javalin and Jetty webserver
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");
-            config.jetty.modifyServletContextHandler(handler ->  handler.setSessionHandler(SessionConfig.sessionConfig()));
+            config.jetty.modifyServletContextHandler(handler -> handler.setSessionHandler(SessionConfig.sessionConfig()));
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
         }).start(7070);
 
         // Routing
 
-        app.get("/", ctx ->  ctx.render("index.html"));
-        app.get("/login", ctx -> viewLoginPage(ctx));
-        app.post("/", ctx -> login(ctx));
-        app.get("/subscribe", ctx -> viewSubscribePage(ctx));
-        app.post("/subscribe", ctx -> subscribe(ctx));
-    }
-
-    private static void viewLoginPage(Context ctx){
-        String message =  "Hej med dig - velkommen til loginsiden";
-        ctx.attribute("message", message);
-        ctx.render("login.html");
-    }
-
-    private static void login(Context ctx){
-        String userName = ctx.formParam("username");
-        String password = ctx.formParam("password");
-        if (!password.equals("1234")) {
-            ctx.redirect("login.html");
-        }
-        ctx.attribute("username", userName);
-        ctx.render("index.html");
-    }
-
-
-    private static void viewSubscribePage(Context ctx){
-        String message =  "Hej med dig - her kan du tilmelde dig nyhedsbrevet";
-        ctx.attribute("message", message);
-        ctx.render("subscribe.html");
-    }
-
-    private static void subscribe(Context ctx) throws DatabaseException {
-        String email = ctx.formParam("email");
-
-
-        // Validate email
-        if (email == null || email.isEmpty() || !email.contains(email)) {
-            ctx.attribute("error", "Invalid email address");
-            ctx.redirect("/subscribe"); // Redirect back to the subscribe page
-            return;
-        }
-
-        try {
-            // Insert email into the database
-            SubscriberMapper mapper = new SubscriberMapper();
-            mapper.insertSubscriber(connectionPool, email);
-
-
-            ctx.attribute("message", "You have successfully subscribed!");
-            ctx.render("success.html");
-        } catch (DatabaseException e) {
-            ctx.attribute("error", "An error occurred while subscribing. Please try again.");
-            ctx.redirect("/subscribe"); // Redirect back to the subscribe page
-        }
-
+        app.get("/", ctx -> homeController.home(ctx));
+        // Login pages
+        app.get("/login", ctx -> homeController.viewLoginPage(ctx));
+        app.post("/", ctx -> homeController.login(ctx));
+        // Subscribe pages
+        app.get("/subscribe", ctx -> homeController.viewSubscribePage(ctx));
+        app.post("/subscribe", ctx -> homeController.subscribe(ctx));
+        app.post("/unsubscribe", ctx -> homeController.unsubscribe(ctx));
+        // Add pages
+        app.get("/admin/newsletters/add", ctx -> adminController.viewAddPage(ctx));
+        app.post("/admin/newsletters/add", ctx -> adminController.addNewsletter(ctx));
     }
 
 
 }
+
 
